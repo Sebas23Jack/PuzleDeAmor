@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Romántico</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            gap: 50px;
+            background: #fdf4f5;
+            flex-wrap: wrap;
+            font-family: 'Arial', sans-serif;
+            background-color: #fef2f4;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .title {
+            font-size: 2.5em;
+            color: #e3424b;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .message {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+        .message p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .signature {
+            font-style: italic;
+            font-size: 1.1em;
+            color: #e3424b;
+            text-align: right;
+            margin-top: 10px;
+        }
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 20px;
+        }
+        .drag{
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 320px;
+            gap: 10px;
+            cursor: grab;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .drag .dragBox{
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 230, 230, 0.5);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .images{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: var(--bgPos);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .reset{
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 25px;
+            border: none;
+            background: #ff85a2;
+            color: white;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            text-transform: uppercase;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            transition: all 0.3s ease;
+        }
+        .reset:hover {
+            background: #ff5c8d;
+            transform: translateX(-50%) translateY(-3px);
+        }
+        .board{
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .dropBox{
+            position: relative;
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 230, 230, 0.5);
+            border: 2px dashed #ffb6c1;
+            border-radius: 5px;
+        }
+        .love-quote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #e3424b;
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .game-area {
+                flex-direction: column;
+            }
+            .title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Para Mi Amor</h1>
+        
+        <div class="message">
+            <p>Amada Mary,</p>
+            <p>Cada pieza de este rompecabezas representa un momento especial que hemos compartido juntos. Al unirlas todas, forman la imagen perfecta de nuestro amor.</p>
+            <p>Te invito a resolver este puzzle, como símbolo de cómo juntos podemos superar cualquier desafío.</p>
+            <div class="signature">Con todo mi amor, Tu Jhonnatan </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="drag" id="drag">
+                <!-- Las piezas se generarán dinámicamente con JavaScript -->
+            </div>
+            <div class="board">
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+                <div class="dropBox" ondrop="drop(event)" ondragover="allDrop(event)"></div>
+            </div>
+        </div>
+        
+        <div class="love-quote">
+            "Contigo, cada día es una nueva pieza de felicidad en el puzzle de nuestra vida juntos."
+        </div>
+        
+        <button class="reset" onclick="window.location.reload();">Reiniciar</button>
+    </div>
+    
+    <script>
+        // Nombre de la imagen original
+        const imageName = "imagen.jpg";
+        
+        window.onload = function() {
+            // Crear una imagen para cargar
+            const img = new Image();
+            img.src = imageName;
+            
+            img.onload = function() {
+                // Generar las piezas del puzzle
+                generatePuzzlePieces(img);
+                
+                // Mezclar las piezas
+                shufflePieces();
+            };
+            
+            // Personalizar el mensaje
+            document.querySelector('.message p:first-child').textContent = 
+                `Amada Mary,`;
+            document.querySelector('.signature').textContent = 
+                `Con todo mi amor, Tu Jhonnatan`;
+        };
+        
+        function generatePuzzlePieces(img) {
+            const dragContainer = document.getElementById('drag');
+            
+            // Dividir en 3x3 (9 piezas)
+            const rows = 3;
+            const cols = 3;
+            const pieceWidth = img.width / cols;
+            const pieceHeight = img.height / rows;
+            
+            // Crear las 9 piezas con posiciones de fondo específicas
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const index = row * cols + col + 1;
+                    
+                    // Crear la estructura HTML para cada pieza
+                    const dragBox = document.createElement('div');
+                    dragBox.className = 'dragBox';
+                    
+                    const pieceDiv = document.createElement('div');
+                    pieceDiv.className = 'images';
+                    pieceDiv.id = `block${index}`;
+                    pieceDiv.draggable = true;
+                    pieceDiv.addEventListener('dragstart', drag);
+                    
+                    // Calcular la posición de fondo para mostrar la parte correcta de la imagen
+                    const bgPosX = -(col * 100) + '%';
+                    const bgPosY = -(row * 100) + '%';
+                    
+                    // Establecer la imagen de fondo y su posición
+                    pieceDiv.style.backgroundImage = `url(${imageName})`;
+                    pieceDiv.style.setProperty('--bgPos', `${bgPosX} ${bgPosY}`);
+                    pieceDiv.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+                    
+                    dragBox.appendChild(pieceDiv);
+                    dragContainer.appendChild(dragBox);
+                }
+            }
+        }
+        
+        function shufflePieces() {
+            const parent = document.getElementById('drag');
+            const frag = document.createDocumentFragment();
+            
+            while (parent.children.length) {
+                const randomIndex = Math.floor(Math.random() * parent.children.length);
+                frag.appendChild(parent.children[randomIndex]);
+            }
+            
+            parent.appendChild(frag);
+        }
+        
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+        
+        function allDrop(event) {
+            event.preventDefault();
+        }
+        
+        function drop(event) {
+            event.preventDefault();
+            let data = event.dataTransfer.getData("text");
+            
+            // Solo permitir soltar si el contenedor está vacío
+            if (event.target.classList.contains('dropBox') && !event.target.hasChildNodes()) {
+                event.target.appendChild(document.getElementById(data));
+                
+                // Comprobar si el puzzle está completo
+                checkCompletion();
+            }
+        }
+        
+        function checkCompletion() {
+            const dropBoxes = document.querySelectorAll('.dropBox');
+            let filled = 0;
+            
+            // Contar cuántas cajas están llenas
+            for (let box of dropBoxes) {
+                if (box.children.length > 0) {
+                    filled++;
+                }
+            }
+            
+            // Si todas las cajas están llenas, mostrar mensaje de éxito
+            if (filled === 9) {
+                setTimeout(() => {
+                    alert('¡Puzzle completado! Te amo con todo mi corazón. ♥');
+                    // Mostrar la imagen completa como recompensa
+                    revealFullImage();
+                }, 300);
+            }
+        }
+        
+        function revealFullImage() {
+            // Crear un overlay con la imagen completa como recompensa
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            overlay.style.zIndex = '1000';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.flexDirection = 'column';
+            overlay.style.cursor = 'pointer';
+            
+            const message = document.createElement('div');
+            message.innerText = '¡Te amo! Eres la pieza más importante en el puzzle de mi vida.';
+            message.style.color = 'white';
+            message.style.fontSize = '2em';
+            message.style.marginBottom = '20px';
+            message.style.textAlign = 'center';
+            message.style.padding = '0 20px';
+            
+            const image = document.createElement('img');
+            image.src = imageName;
+            image.style.maxWidth = '80%';
+            image.style.maxHeight = '70vh';
+            image.style.borderRadius = '10px';
+            image.style.boxShadow = '0 5px 25px rgba(255,255,255,0.2)';
+            
+            const closeText = document.createElement('div');
+            closeText.innerText = 'Haz clic en cualquier lugar para cerrar';
+            closeText.style.color = 'white';
+            closeText.style.marginTop = '20px';
+            
+            overlay.appendChild(message);
+            overlay.appendChild(image);
+            overlay.appendChild(closeText);
+            
+            overlay.addEventListener('click', () => {
+                document.body.removeChild(overlay);
+            });
+            
+            document.body.appendChild(overlay);
+        }
+    </script>
+</body>
+</html>
